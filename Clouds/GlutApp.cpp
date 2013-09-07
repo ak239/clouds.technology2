@@ -2,7 +2,6 @@
 #include "GlutApp.h"
 
 #include <cassert>
-#include "Utility.h"
 
 GlutApp* GlutApp::self = nullptr;
 
@@ -24,20 +23,15 @@ GlutApp::GlutApp(int argc, _TCHAR* argv[], const char* appName)
 		windowId = glutCreateWindow("Application");
 
 	GLenum err = glewInit();
-	fatalPrint(err != GLEW_OK, "Error with glut", err);
+	if (err != GLEW_OK) LOG_ERROR(boost::str(boost::format("Error with glut inititalization: %X") % err));
 
 	mainWindowId = windowId;
-
-	//GLuint VertexArrayID = 0;
-	//glGenVertexArrays(1, &VertexArrayID);
-	//glBindVertexArray(VertexArrayID);
-
-	glDepthMask(GL_TRUE);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	glEnable (GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 }
 
 void GlutApp::exec()

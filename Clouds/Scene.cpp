@@ -10,9 +10,8 @@ void Scene::reshape(int width, int height)
 	for (std::size_t i = 0; i < m_objects.size(); ++i)
 		m_objects[i]->reshape(width, height);
 
-	//TwWindowSize(width, height);
-
-	//glutPostRedisplay();
+	TwWindowSize(width, height);
+	glutPostRedisplay();
 }
 
 void Scene::display()
@@ -24,7 +23,6 @@ void Scene::display()
 	TwWindowSize(glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT));
 
 	GLfloat aspect = static_cast<GLfloat>(glutGet(GLUT_WINDOW_WIDTH))/glutGet(GLUT_WINDOW_HEIGHT);
-	// Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
 	glm::mat4 projection = glm::perspective(45.0f, aspect, 0.1f, 500.0f);
 	
 	glm::mat4 projectionView;
@@ -44,7 +42,7 @@ void Scene::display()
 		m_objects[i]->render();
 	}
 
-	//TwDraw();
+	TwDraw();
 	glutSwapBuffers();
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+
 class CloudFuncs
 {
 public:
@@ -29,8 +30,6 @@ public:
 	static GLfloat mt2(GLfloat angle, GLfloat z1);
 	static GLfloat mr2(GLfloat angle, GLfloat z1);
 	static GLfloat rSun3(GLfloat angle, GLfloat z1);
-
-	//static void addVarToBar(TwBar* bar);
 
 private:
 	static GLfloat linterp(GLfloat data[], GLfloat angle);

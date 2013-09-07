@@ -19,9 +19,9 @@ uniform vec2 sunConstants2;
 
 // variable for reverse transfotm to world position
 uniform vec2 windowSize;
-uniform mat4 invMVP;
+uniform mat4 invPV;
 
-uniform vec3 scale;
+uniform vec3 width;
 
 float pi = 3.141592653589;
 float scaleKt = 3.0f;
@@ -36,12 +36,12 @@ vec3 CalcPosition()
 
   vec4 clipPos = ndcPos / gl_FragCoord.w;
 
-  return vec3(invMVP * clipPos);
+  return vec3(invPV * clipPos);
 }
 
 void GetT(in vec3 pos, in vec3 dir, out float d, out float t1, out float t2)
 {
-  mat3 M   = mat3( 1.0f / scale.x, 0.0f, 0.0f, 0.0f, 1.0f / scale.y, 0.0f, 0.0f, 0.0f, 1.0f / scale.z);
+  mat3 M   = mat3( 1.0f / width.x, 0.0f, 0.0f, 0.0f, 1.0f / width.y, 0.0f, 0.0f, 0.0f, 1.0f / width.z);
   vec3 P1  = pos * M - cloudPos * M;
   vec3 V1  = dir * M;
 

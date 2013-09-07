@@ -28,34 +28,26 @@ private:
 class CloudsField : public RenderObject
 {
 public:
-	CloudsField() : m_isStopped(true), m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
-	CloudsField(GLContext context) : RenderObject(context), m_isStopped(true), m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
+	CloudsField() : m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
+	CloudsField(GLContext context) : RenderObject(context), m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
 
-	void fill(GLuint cloudCount, const glm::vec3& leftBottomFar, const glm::vec3& rightTopNear, GLfloat coveragePercent,
-		GLuint particleCount = 1000);
+	void fill(GLuint cloudCount, const glm::vec3& leftBottomFar, const glm::vec3& rightTopNear, GLfloat coveragePercent);
 
 	void setMainShader(Shader* mainShader)
 	{ 
-		m_shader     = mainShader; 
-		m_resolution = mainShader->getUniform<glm::vec2>("windowSize");
-		m_camDir     = mainShader->getUniform<glm::vec3>("cameraDir");
-		m_cameraPos  = mainShader->getUniform<glm::vec3>("cameraPos");
+		m_shader      = mainShader; 
+
+		m_uWindowSize = mainShader->getUniform<glm::vec2>("windowSize");
+		m_uCameraPos  = mainShader->getUniform<glm::vec3>("cameraPos");
 
 		m_uKref      = mainShader->getUniform<GLfloat>("kref");
 		m_uThetaSun  = mainShader->getUniform<GLfloat>("thetaSun");
 		m_uPhiSun    = mainShader->getUniform<GLfloat>("phiSun");
-		//m_uThetaView = mainShader->getUniform<GLfloat>("thetaView");
-		//m_uPhiView   = mainShader->getUniform<GLfloat>("phiView");
-		//m_uP         = mainShader->getUniform<GLfloat>("P");
-		//m_uP2        = mainShader->getUniform<GLfloat>("P2");
 		m_uGammaRef  = mainShader->getUniform<GLfloat>("gammaref");
 		m_uZRef      = mainShader->getUniform<GLfloat>("zref");
 		m_uSunConstants1 = mainShader->getUniform<glm::vec3>("sunConstants1");
 		m_uSunConstants2 = mainShader->getUniform<glm::vec2>("sunConstants2");
 		m_ug         = mainShader->getUniform<GLfloat>("g");
-
-//		for (int i = 0; i < m_clouds.size(); ++i)
-//			m_clouds[i].setMainShader(mainShader);
 	}
 
 	void addVarToBar(TwBar* bar);
@@ -71,17 +63,14 @@ private:
 	static GLfloat uniform(GLfloat min, GLfloat max);
 	static GLfloat normal(GLfloat mean, GLfloat stdev);
 
-	bool m_isStopped;
-
 	Shader*            m_shader;
 	Mover<CloudsMover> m_mover;
 
 	GLfloat m_thetaSun;
 	GLfloat m_phiSun;
 
-	UniformWrapper<glm::vec2> m_resolution;
-	UniformWrapper<glm::vec3> m_camDir;
-	UniformWrapper<glm::vec3> m_cameraPos;
+	UniformWrapper<glm::vec2> m_uWindowSize;
+	UniformWrapper<glm::vec3> m_uCameraPos;
 
 	UniformWrapper<GLfloat>   m_uKref;
 	UniformWrapper<GLfloat>   m_uThetaSun;
@@ -95,16 +84,6 @@ private:
 	UniformWrapper<glm::vec3> m_uSunConstants1;
 	UniformWrapper<glm::vec2> m_uSunConstants2;
 	UniformWrapper<GLfloat>   m_ug;
-
-	mutable GLfloat   m_currentP;
-	mutable GLfloat   m_thetaView;
-	mutable GLfloat   m_phiView;
-	mutable GLfloat   m_Theta;
-	mutable GLfloat   m_p2;
-	mutable GLfloat   m_pPeak;
-	mutable GLfloat   m_dirac1;
-	mutable GLfloat   m_dirac2;
-	mutable glm::vec3 m_cameraDir;
 
 	bool m_isMoveStop;	
 };

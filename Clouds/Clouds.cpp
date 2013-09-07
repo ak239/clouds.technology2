@@ -1,34 +1,22 @@
 // Clouds.cpp: определяет точку входа для консольного приложения.
 //
 
-#define Tw \/\/
-
 #include "stdafx.h"
 #include <cmath>
 
 #include "GlutApp.h"
-#include "Triangle.h"
-#include "Cube.h"
 #include "Logger.h"
 #include "UniformWrapper.h"
-#include "Sphere.h"
 #include "Camera.h"
-#include "Axis.h"
-#include "Plane.h"
 #include "MouseCamera.h"
 #include "Scene.h"
 #include "Cloud.h"
 #include "SkyBox.h"
 #include "Mover.h"
 #include "CloudsField.h"
-#include "Particle.h"
-#include "ParticleField.h"
 
-Sphere sp;
 Camera camera;
 MouseCamera mouseCamera;
-Axis   axis;
-Plane  plane;
 CloudsField cloudsField;
 
 typedef glm::vec3 (*Func)(GLfloat);
@@ -67,38 +55,28 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 	Logger::instance().setStream(std::cout);
 
-	LOG_DEBUG("hello debug");
-	LOG_ERROR("hello info");
-
-
-	//ParticleField field(1.0f, 50.0f, 100.0f);
-	//field.generate(1000);
-
-
-	//return 0;
-
 	GlutApp app(argc, argv, "Clouds App");
 
 	GlutWindow wnd = app.getMainWindow();
 
-//	TwInit(TW_OPENGL_CORE, NULL);
-//	TwBar *myBar;
-//	myBar = TwNewBar("Clouds Coverage");
+	TwInit(TW_OPENGL_CORE, NULL);
+	TwBar *myBar;
+	myBar = TwNewBar("Clouds Coverage");
 
-	//TwAddVarRW(myBar, "CloudsCount",    TW_TYPE_UINT16, &CloudsCount, "");
-	//TwAddVarRW(myBar, "CloudsCoverage", TW_TYPE_FLOAT,  &CloudsCoverage, "");
-	//TwAddSeparator(myBar, "Left Bottom Far", "");
-	//TwAddVarRW(myBar, "X1", TW_TYPE_FLOAT, &LeftBottomFar[0], "");
-	//TwAddVarRW(myBar, "Y1", TW_TYPE_FLOAT, &LeftBottomFar[1], "");
-	//TwAddVarRW(myBar, "Z1", TW_TYPE_FLOAT, &LeftBottomFar[2], "");
-	//TwAddSeparator(myBar, "Right Top Near", "");
-	//TwAddVarRW(myBar, "X2", TW_TYPE_FLOAT, &RightTopNear[0], "");
-	//TwAddVarRW(myBar, "Y2", TW_TYPE_FLOAT, &RightTopNear[1], "");
-	//TwAddVarRW(myBar, "Z2", TW_TYPE_FLOAT, &RightTopNear[2], "");
-	//TwAddSeparator(myBar, "Particles", "");
-	//TwAddVarRW(myBar, "Count",    TW_TYPE_UINT32, &ParticlesCount, "");
-	//
-	//TwAddButton(myBar, "Apply", &initCloudsField, 0, "");
+	TwAddVarRW(myBar, "CloudsCount",    TW_TYPE_UINT16, &CloudsCount, "");
+	TwAddVarRW(myBar, "CloudsCoverage", TW_TYPE_FLOAT,  &CloudsCoverage, "");
+	TwAddSeparator(myBar, "Left Bottom Far", "");
+	TwAddVarRW(myBar, "X1", TW_TYPE_FLOAT, &LeftBottomFar[0], "");
+	TwAddVarRW(myBar, "Y1", TW_TYPE_FLOAT, &LeftBottomFar[1], "");
+	TwAddVarRW(myBar, "Z1", TW_TYPE_FLOAT, &LeftBottomFar[2], "");
+	TwAddSeparator(myBar, "Right Top Near", "");
+	TwAddVarRW(myBar, "X2", TW_TYPE_FLOAT, &RightTopNear[0], "");
+	TwAddVarRW(myBar, "Y2", TW_TYPE_FLOAT, &RightTopNear[1], "");
+	TwAddVarRW(myBar, "Z2", TW_TYPE_FLOAT, &RightTopNear[2], "");
+	TwAddSeparator(myBar, "Particles", "");
+	TwAddVarRW(myBar, "Count",    TW_TYPE_UINT32, &ParticlesCount, "");
+	
+	TwAddButton(myBar, "Apply", &initCloudsField, 0, "");
 
 	mouseCamera.setPos(glm::vec3(4, 0.0f, 0));
 	mouseCamera.setLookAt(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -112,33 +90,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	cloudShader.loadFromFile("cloud", Shader::Vertex | Shader::Fragment);
 	cloudShader.link();
 
-	Shader billboardShader(wnd.getContext());
-	billboardShader.loadFromFile("billboard", Shader::Vertex | Shader::Fragment);
-	billboardShader.link();
-
-
-	Shader* particleShader  = Particle::LoadShader(wnd.getContext());
-	GLuint  particleVertex  = Particle::GetVertexBuffer(wnd.getContext());
-	GLuint  particleTexture = Particle::GetTextureID(wnd.getContext());
-
-	Particle particle(wnd.getContext(), particleShader, particleVertex, particleTexture);
-	//scene.addObject(&particle);
-
-	moverTest.setFunc(SimpleSinFunc);
-	moverTest.addObject(&particle);
-
-	//Cloud cloud(wnd.getContext());
-	//cloud.setBillboardShader(&billboardShader);
-	//cloud.setMainShader(&cloudShader);
-	//cloud.setWidth(glm::vec3(2.0f, 1.0f, 1.0f));
-
 	Shader skyboxShader(wnd.getContext());
 	skyboxShader.loadFromFile("skybox", Shader::Vertex | Shader::Fragment);
 	skyboxShader.link();
 
 	cloudsField.setContext(wnd.getContext());
 	cloudsField.setMainShader(&cloudShader);
-	//cloudsField.addVarToBar(myBar);
+	cloudsField.addVarToBar(myBar);
 
 	SkyBox skybox(wnd.getContext());
 	skybox.setShader(&skyboxShader);
@@ -167,22 +125,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	glutSpecialFunc((GLUTspecialfun)TwEventSpecialGLUT);
 	glutCloseFunc(&closeFunc);
 
-	//TwGLUTModifiersFunc(glutGetModifiers);
- 
-
+	TwGLUTModifiersFunc(glutGetModifiers);
 	app.exec();
 }
 
 void keyboardFunc(unsigned char key, int x, int y)
 {
 	switch(key){
-	case 'w':
-		sp.move(glm::vec3(0.1, 0.0, 0.0));
-		break;
-	case 's':
-		sp.move(glm::vec3(-0.1, 0.0, 0.0));
-		break;
-
 	case 'y':
 		camera.move(glm::vec3(1.0, 0.0, 0.0));
 		break;
@@ -201,14 +150,6 @@ void keyboardFunc(unsigned char key, int x, int y)
 	case 'm':
 		camera.move(glm::vec3(0.0, 0.0, -1.0));
 		break;
-
-	case 'c':
-		plane.move(glm::vec3(0.1, 0.0, 0.0));
-		break;
-	case 'v':
-		plane.move(glm::vec3(-0.1, 0.0, 0.0));
-		break;
-
 	case 'q':
 		mouseCamera.moveByDir(0.2f);
 		break;
@@ -231,8 +172,6 @@ void keyboardFunc(unsigned char key, int x, int y)
 	glm::vec3 axis  = glm::normalize(glm::cross(planeNormal, cameraDirection));
 	GLfloat   angle = glm::acos(glm::dot(planeNormal, cameraDirection));
 
-	plane.setRotate(axis, angle);
-
 	TwEventKeyboardGLUT(key, x, y);
 }
 
@@ -247,14 +186,10 @@ void motionFunc(int x, int y)
 		LastTime = time;
 
 	if (deltaTime > 0 && IsCameraMove){
-
 		LastTime = time;
-
 
 		GLfloat deltaHor = MouseSpeed * deltaTime * float(halfXWindow - x );
 		GLfloat deltaVer = MouseSpeed * deltaTime * float(halfYWindow - y );
-		std::cout << deltaHor << std::endl;
-
 
 		if (std::abs(deltaHor) > 0.03f) deltaHor = 0.03f * (deltaHor > 0.0 ? 1 : -1);
 		if (std::abs(deltaVer) > 0.03f) deltaVer = 0.03f * (deltaVer > 0.0 ? 1 : -1);
@@ -306,5 +241,5 @@ glm::vec3 SimpleLinkedFunc(GLfloat time)
 
 void TW_CALL initCloudsField(void *clientData)
 {
-	cloudsField.fill(CloudsCount, LeftBottomFar, RightTopNear, CloudsCoverage, ParticlesCount);
+	cloudsField.fill(CloudsCount, LeftBottomFar, RightTopNear, CloudsCoverage);
 }

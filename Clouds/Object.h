@@ -4,9 +4,6 @@
 
 #define GET_CONTEXT() GLContextGetter get(getContext())
 
-/// <summary>
-/// Base object to all OpenGL objects
-/// </summary>
 class Object
 {
 public:

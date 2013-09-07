@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GlutWindow.h"
 #include "GLContext.h"
-#include "Utility.h"
 #include "Camera.h"
 
 std::array<Scene*, GlutWindow::MaxWindowsCount> GlutWindow::Windows;
@@ -17,7 +16,7 @@ GlutWindow::GlutWindow(int windowId):
 	data(new GlutWindowData(windowId)),
 	counter(new int(1))
 {
-	fatalPrint(static_cast<std::size_t>(windowId) >= Windows.size(), "Too many windows");
+	if (static_cast<std::size_t>(windowId) >= Windows.size()) LOG_ERROR("Too many windows");
 
 	Windows[windowId] = 0;
 

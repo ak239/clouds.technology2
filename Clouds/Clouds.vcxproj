@@ -80,40 +80,30 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Axis.h" />
     <ClInclude Include="BillboardObject.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="CloudFuncs.h" />
     <ClInclude Include="CloudsField.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="Cube.h" />
     <ClInclude Include="CubemapTexture.h" />
     <ClInclude Include="GLContext.h" />
     <ClInclude Include="MouseCamera.h" />
     <ClInclude Include="Mover.h" />
     <ClInclude Include="nvImage.h" />
     <ClInclude Include="Object.h" />
-    <ClInclude Include="GLRenderObject.h" />
     <ClInclude Include="GlutApp.h" />
     <ClInclude Include="GlutWindow.h" />
-    <ClInclude Include="Particle.h" />
-    <ClInclude Include="ParticleField.h" />
-    <ClInclude Include="Plane.h" />
     <ClInclude Include="RenderObject.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SkyBox.h" />
-    <ClInclude Include="Sphere.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Triangle.h" />
     <ClInclude Include="UniformWrapper.h" />
-    <ClInclude Include="Utility.h" />
     <ClInclude Include="Logger.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Axis.cpp" />
     <ClCompile Include="BillboardObject.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Cloud.cpp" />
@@ -121,7 +111,6 @@
     <ClCompile Include="Clouds.cpp" />
     <ClCompile Include="CloudsField.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="CubemapTexture.cpp" />
     <ClCompile Include="GLContext.cpp" />
     <ClCompile Include="MouseCamera.cpp" />
@@ -129,25 +118,18 @@
     <ClCompile Include="nvImage.cpp" />
     <ClCompile Include="nvImageDDS.cpp" />
     <ClCompile Include="Object.cpp" />
-    <ClCompile Include="GLRenderObject.cpp" />
     <ClCompile Include="GlutApp.cpp" />
     <ClCompile Include="GlutWindow.cpp" />
     <ClCompile Include="Logger.cpp" />
-    <ClCompile Include="Particle.cpp" />
-    <ClCompile Include="ParticleField.cpp" />
-    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="RenderObject.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SkyBox.cpp" />
-    <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="UniformWrapper.cpp" />
-    <ClCompile Include="Utility.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

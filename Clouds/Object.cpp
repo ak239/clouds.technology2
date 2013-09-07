@@ -2,11 +2,6 @@
 #include "Object.h"
 #include "Logger.h"
 
-/// <summary>
-/// Sets the context.
-/// Если контекст внутри объекта уже был использован, то ошибка.
-/// </summary>
-/// <param name="context">The context.</param>
 void Object::setContext(GLContext context)
 {
 	if (m_isUsed)
