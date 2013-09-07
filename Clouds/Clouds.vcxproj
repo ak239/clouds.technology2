@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D4C4116C-3BAE-4B5A-800A-583407246BB4}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>Clouds</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v110</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>D:\Develop\CloudsLibs\glm-0.9.4.3;D:\Develop\CloudsLibs\boost;D:\Develop\CloudsLibs\AntTweakBar\include;D:\Develop\CloudsLibs\freeglut-2.8.0\include;D:\Develop\CloudsLibs\glew-1.9.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Develop\CloudsLibs\AntTweakBar\lib\debug;D:\Develop\CloudsLibs\boost\stage\lib;D:\Develop\CloudsLibs\freeglut-2.8.0\lib\x86\Debug;D:\Develop\CloudsLibs\glew-1.9.0\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>glew32d.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Axis.h" />
+    <ClInclude Include="BillboardObject.h" />
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Cloud.h" />
+    <ClInclude Include="CloudFuncs.h" />
+    <ClInclude Include="CloudsField.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="Cube.h" />
+    <ClInclude Include="CubemapTexture.h" />
+    <ClInclude Include="GLContext.h" />
+    <ClInclude Include="MouseCamera.h" />
+    <ClInclude Include="Mover.h" />
+    <ClInclude Include="nvImage.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="GLRenderObject.h" />
+    <ClInclude Include="GlutApp.h" />
+    <ClInclude Include="GlutWindow.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleField.h" />
+    <ClInclude Include="Plane.h" />
+    <ClInclude Include="RenderObject.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="Shader.h" />
+    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="Sphere.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="UniformWrapper.h" />
+    <ClInclude Include="Utility.h" />
+    <ClInclude Include="Logger.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Axis.cpp" />
+    <ClCompile Include="BillboardObject.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Cloud.cpp" />
+    <ClCompile Include="CloudFuncs.cpp" />
+    <ClCompile Include="Clouds.cpp" />
+    <ClCompile Include="CloudsField.cpp" />
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="CubemapTexture.cpp" />
+    <ClCompile Include="GLContext.cpp" />
+    <ClCompile Include="MouseCamera.cpp" />
+    <ClCompile Include="Mover.cpp" />
+    <ClCompile Include="nvImage.cpp" />
+    <ClCompile Include="nvImageDDS.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="GLRenderObject.cpp" />
+    <ClCompile Include="GlutApp.cpp" />
+    <ClCompile Include="GlutWindow.cpp" />
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleField.cpp" />
+    <ClCompile Include="Plane.cpp" />
+    <ClCompile Include="RenderObject.cpp" />
+    <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="UniformWrapper.cpp" />
+    <ClCompile Include="Utility.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
