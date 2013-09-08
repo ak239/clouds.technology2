@@ -31,6 +31,7 @@ uniform float kts[7] = float[](1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
 
 float pi = 3.141592653589;
 float scaleKt = 3.0f;
+bool isEllipse = false;
 
 vec3 CalcPosition()
 {
@@ -130,26 +131,46 @@ void main( void ) {
   float P2        = phaseByPhase(Theta);
   float PPeak     = phasePeak(P, Theta);
   
-  float d;
-  float t1;
-  float t2;
+  float lview;
+  float z1;
+  float lsun;
+  float alpha = 1.0f;
   
-  GetT(pos, dir, d, t1, t2);
-  if (d < 0.0f)          discard;
-  if (abs(t2) > abs(t1)) discard;
-   
-  float lview     = (t1 - t2) * scaleKt;
-  float alpha     = lview / scaleKt / 20.0f;
-  alpha = 1.0f;
-  
-  GetT(pos, vec3(0.0f, 1.0f, 0.0f), d, t1, t2);
-  if (d < 0.0f)          discard;
-  float z1 = (t1 - t2) * scaleKt;
+  if (isEllipse){
+    float d;
+    float t1;
+    float t2;
     
-  vec3 sunDir = vec3(sin(thetaSun) * cos(phiSun), sin(thetaSun) * sin(phiSun), cos(thetaSun));
-  GetT(pos, sunDir, d, t1, t2);
-  if (d < 0.0f)          discard;
-  float lsun = (t1 - t2) * scaleKt;
+    GetT(pos, dir, d, t1, t2);
+    if (d < 0.0f)//          discard;
+    {
+      gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+      return;
+    }
+    if (abs(t2) > abs(t1)) discard;
+     
+    lview     = (t1 - t2) * scaleKt;
+    if (lview < 10.0f)
+      alpha = lview / 10.0f;
+      
+    GetT(pos, vec3(0.0f, 1.0f, 0.0f), d, t1, t2);
+    if (d < 0.0f)          discard;
+    z1 = (t1 - t2) * scaleKt;
+      
+    vec3 sunDir = vec3(sin(thetaSun) * cos(phiSun), sin(thetaSun) * sin(phiSun), cos(thetaSun));
+    GetT(pos, sunDir, d, t1, t2);
+    if (d < 0.0f)          discard;
+    lsun = (t1 - t2) * scaleKt;
+  }
+  else
+  {
+    //gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
+    //return;
+    //if (pos.y < cloudPos.y) discard;
+    z1    = (abs(pos.y - cloudPos.y) + 0.6 * width.y) * scaleKt;
+    lview = abs(z1 / cos(thetaView));
+    lsun  = abs(z1 / cos(thetaSun));
+  }
     
   float b  = sunConstants1.x;
   float c  = sunConstants1.y;

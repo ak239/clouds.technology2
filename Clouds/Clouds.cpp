@@ -35,8 +35,8 @@ bool    IsCameraMove = true;
 
 glm::vec3 LeftBottomFar  = glm::vec3(-50.0f, -25.0f, -50.0f);
 glm::vec3 RightTopNear   = glm::vec3(50.0f,  -3.0f, 50.0f);
-GLuint    CloudsCount    = 6;
-GLfloat   CloudsCoverage = 0.5;
+GLuint    CloudsCount    = 1;
+GLfloat   CloudsCoverage = 0.2;
 
 Shader* CloudShader = 0;
 GlutWindow* MainWindow = 0;
