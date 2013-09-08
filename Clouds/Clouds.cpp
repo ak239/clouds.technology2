@@ -35,9 +35,11 @@ bool    IsCameraMove = true;
 
 glm::vec3 LeftBottomFar  = glm::vec3(-50.0f, -25.0f, -50.0f);
 glm::vec3 RightTopNear   = glm::vec3(50.0f,  -3.0f, 50.0f);
-GLuint    CloudsCount    = 1;
+GLuint    CloudsCount    = 6;
 GLfloat   CloudsCoverage = 0.5;
-GLuint    ParticlesCount = 1000;
+
+Shader* CloudShader = 0;
+GlutWindow* MainWindow = 0;
 
 void keyboardFunc(unsigned char key, int x, int y);
 void motionFunc(int x, int y);
@@ -47,6 +49,7 @@ void reshapeFunc(int width, int height);
 void closeFunc();
 
 void TW_CALL initCloudsField(void *clientData);
+void TW_CALL reloadShader(void *clientData);
 
 glm::vec3 SimpleSinFunc(GLfloat time);
 glm::vec3 SimpleLinkedFunc(GLfloat time);
@@ -58,6 +61,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	GlutApp app(argc, argv, "Clouds App");
 
 	GlutWindow wnd = app.getMainWindow();
+	MainWindow = &wnd;
 
 	TwInit(TW_OPENGL_CORE, NULL);
 	TwBar *myBar;
@@ -73,10 +77,9 @@ int _tmain(int argc, _TCHAR* argv[])
 	TwAddVarRW(myBar, "X2", TW_TYPE_FLOAT, &RightTopNear[0], "");
 	TwAddVarRW(myBar, "Y2", TW_TYPE_FLOAT, &RightTopNear[1], "");
 	TwAddVarRW(myBar, "Z2", TW_TYPE_FLOAT, &RightTopNear[2], "");
-	TwAddSeparator(myBar, "Particles", "");
-	TwAddVarRW(myBar, "Count",    TW_TYPE_UINT32, &ParticlesCount, "");
 	
 	TwAddButton(myBar, "Apply", &initCloudsField, 0, "");
+	TwAddButton(myBar, "Reload Shader", &reloadShader, 0, "");
 
 	mouseCamera.setPos(glm::vec3(4, 0.0f, 0));
 	mouseCamera.setLookAt(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -86,17 +89,14 @@ int _tmain(int argc, _TCHAR* argv[])
 	scene.setCamera(&mouseCamera);
 	wnd.setScene(&scene);
 
-	Shader cloudShader(wnd.getContext());
-	cloudShader.loadFromFile("cloud", Shader::Vertex | Shader::Fragment);
-	cloudShader.link();
-
 	Shader skyboxShader(wnd.getContext());
 	skyboxShader.loadFromFile("skybox", Shader::Vertex | Shader::Fragment);
 	skyboxShader.link();
 
 	cloudsField.setContext(wnd.getContext());
-	cloudsField.setMainShader(&cloudShader);
 	cloudsField.addVarToBar(myBar);
+
+	reloadShader(0);
 
 	SkyBox skybox(wnd.getContext());
 	skybox.setShader(&skyboxShader);
@@ -242,4 +242,14 @@ glm::vec3 SimpleLinkedFunc(GLfloat time)
 void TW_CALL initCloudsField(void *clientData)
 {
 	cloudsField.fill(CloudsCount, LeftBottomFar, RightTopNear, CloudsCoverage);
+}
+
+void TW_CALL reloadShader(void *clientData)
+{
+	if (CloudShader) delete CloudShader;
+	CloudShader = new Shader(MainWindow->getContext());
+
+	CloudShader->loadFromFile("cloud", Shader::Vertex | Shader::Fragment);
+	if (CloudShader->link())
+		cloudsField.setMainShader(CloudShader);
 }

@@ -23,6 +23,12 @@ uniform mat4 invPV;
 
 uniform vec3 width;
 
+uniform vec3 sunColor;
+uniform vec3 skyColor;
+uniform vec3 groundColor;
+
+uniform float kts[7] = float[](1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f, 1.0f);
+
 float pi = 3.141592653589;
 float scaleKt = 3.0f;
 
@@ -72,11 +78,12 @@ float angle(in float theta1, in float phi1, in float theta2, in float phi2)
 
 float phase(in float theta)
 {
-  if (theta < 0.03f) return 2.0f; 
+  //if (theta < 0.05f) return 2.0f; 
   if (theta < 0.0f) return 0.0f;
   float kt  = (1.0f - g * g) / 4.0f / pi;
-  float val = kt / pow((1.0f + g * g - 2.0f * g * cos(theta)), 1.5f);
-  return val;
+  float tmp = pow((1.0f + g * g - 2.0f * g * cos(theta)), 1.5f);
+  //if (tmp < 0.00001f) return 2.0f;
+  return kt / tmp;
 }
 
 float phaseByPhase(in float theta)
@@ -133,7 +140,8 @@ void main( void ) {
    
   float lview     = (t1 - t2) * scaleKt;
   float alpha     = lview / scaleKt / 20.0f;
-    
+  alpha = 1.0f;
+  
   GetT(pos, vec3(0.0f, 1.0f, 0.0f), d, t1, t2);
   if (d < 0.0f)          discard;
   float z1 = (t1 - t2) * scaleKt;
@@ -151,8 +159,13 @@ void main( void ) {
   
   float F      = b + (1.0f - b) * exp(-z1 * c);
   float gamma  = F * gammaref / (z1 - (z1 - zref) * gammaref);
+    
   float Mr1Inf = 1 - gamma;
-  float Mt1Inf = gamma; //- exp(-lsun * kref);
+  float Mt1Inf = gamma - exp(-(lsun) * kref);
+  
+  //gl_FragColor = vec4(vec3(Mt1Inf), 1.0f);
+  //return;
+
   float Mt1    = t * z1 * kc * exp(-kc * z1);
   float Mr1    = 1 / 2.0f * r * (1.0f - exp(-2.0f * kc * z1));
   float Mt2    = 1 / 2.0f * (kc * t * z1) * (kc * t * z1) * exp(-2.0f * kc * z1) + 1 / 4.0f * r * r * (1 + 2 * (kc * z1 - 1) * exp(-2 * kc * z1)) * exp (-3 * kc * z1);
@@ -160,14 +173,20 @@ void main( void ) {
   float R3     = (Mr1Inf - Mr1 - Mr2) / 2.0f / 3.1415;
   float T3     = (Mt1Inf - Mt1 - Mt2) / 2.0f / 3.1415 * 2.0f;
   
-  float kt1 = 1.0f / (cos(thetaView) + cos(thetaSun) * ( 1.0f - exp(-kref * (lview + lsun))));
-  float kt2 = 1.0f / (cos(thetaSun) - cos(thetaView) * ( exp(-kref*lsun) - exp(-kref*lview)));
+  float kt1 = 1.0f / (cos(thetaView) + cos(thetaSun)) * ( 1.0f - exp(-kref * (lview + lsun)));
+  float tmp_kt2 = (cos(thetaSun) - cos(pi / 2.0f + thetaView));
+  float kt2 = 1.0f / tmp_kt2 * (exp(-kref*lsun) - exp(-kref*lview));
   float R1 = P * kt1;
   float T1 = P * kt2;
-  //float R2 = P2 * kt1;
+  float R2 = P2 * kt1;
   float T2 = P2 * kt2;
   float T0a = dirac(thetaView - thetaSun) * dirac(abs(phiView - phiSun) - pi) * exp(-lview * kref);
   float T0b = PPeak * ( 1.0f - exp(-lview * (kref )));
   
-  gl_FragColor = vec4 ((T3 + T2 + T1 + T0a + T0b)* cos(thetaSun) * vec3(227.0f / 255.0f, 168.0f / 255.0f, 87.0f / 255.0f) * 1.0f, alpha);
+  vec3 Lsun    = (kts[0] * T3 + kts[1] * T2 + kts[2] * T1 + kts[3] * T0a + kts[4] * T0b)* cos(thetaSun) * sunColor;
+  vec3 Lsky    = kts[5] * Mt1Inf * skyColor / 2.0f / pi;
+  vec3 Lground = kts[6] * Mr1Inf * groundColor / 2.0f / pi;
+  
+  gl_FragColor = vec4 (Lsun + Lsky + Lground, alpha);
+//  gl_FragColor = vec4 ((T3 + T2 + T1 + T0a + T0b)* cos(thetaSun) * vec3(227.0f / 255.0f, 168.0f / 255.0f, 87.0f / 255.0f) * 1.0f, alpha);
 }

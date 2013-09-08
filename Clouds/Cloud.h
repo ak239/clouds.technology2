@@ -7,8 +7,8 @@
 class Cloud : public RenderObject
 {
 public:
-	Cloud():m_width(1.0f), m_bar(0){}
-	Cloud(GLContext context):RenderObject(context), m_width(1.0f), m_bar(0){}
+	Cloud():m_width(1.0f), m_bar(0), m_mainShader(0){}
+	Cloud(GLContext context):RenderObject(context), m_width(1.0f), m_bar(0), m_mainShader(0){}
 	~Cloud(){if (m_bar) TwDeleteBar(m_bar); }
 
 	void setMainShader(Shader* mainShader);

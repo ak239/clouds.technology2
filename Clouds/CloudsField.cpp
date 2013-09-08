@@ -43,8 +43,6 @@ void CloudsField::fill(GLuint cloudCount, const glm::vec3& leftBottomFar, const 
 	GLfloat currentLength = (total * coveragePercent - current) / currentWidth;
 	GLfloat currentHeight = std::abs(normal(10.0f, 0.01f));
 
-	std::cout << currentWidth << "," << currentLength << "," << currentHeight << std::endl;
-
 	m_clouds[cloudCount - 1].setWidth(glm::vec3(currentWidth, currentHeight, currentLength));
 	LOG_DEBUG(boost::str(boost::format("Create cloud: (%f, %f, %f)") % currentWidth % currentLength % currentHeight));
 
@@ -66,13 +64,15 @@ void CloudsField::fill(GLuint cloudCount, const glm::vec3& leftBottomFar, const 
 	m_mover.setFunc(CloudsMover(leftBottomFar, rightTopNear));
 
 	for (GLuint i = 0; i < cloudCount; ++i){
-		m_clouds[i].setMainShader(m_shader);
+		if (m_shader)
+			m_clouds[i].setMainShader(m_shader);
 		//m_clouds[i].addVarToBar();
 		m_mover.addObject(&m_clouds[i]);
 	}
 
 	invalidateConstants();
-	m_uWindowSize.setValue(glm::vec2(static_cast<GLfloat>(glutGet(GLUT_WINDOW_WIDTH)), static_cast<GLfloat>(glutGet(GLUT_WINDOW_HEIGHT))));
+	if (m_shader)
+		m_uWindowSize.setValue(glm::vec2(static_cast<GLfloat>(glutGet(GLUT_WINDOW_WIDTH)), static_cast<GLfloat>(glutGet(GLUT_WINDOW_HEIGHT))));
 	m_isMoveStop = false;
 }
 
@@ -81,22 +81,31 @@ void CloudsField::renderImpl()
 	if (!m_isMoveStop)
 		m_mover.idleFunc();
 
-	m_shader->use();
+	if (m_shader){
+		m_shader->use();
 
-	m_uCameraPos.setValue(getCameraPos());
-	m_thetaSun = glm::mod(glutGet(GLUT_ELAPSED_TIME) / 10000.0f, glm::pi<GLfloat>() / 2.0f);
-	m_uThetaSun.setValue(m_thetaSun);
-	m_phiSun = glm::mod(glutGet(GLUT_ELAPSED_TIME) / 10000.0f, glm::pi<GLfloat>());
-	m_phiSun = 0.0f;
-	m_uPhiSun.setValue(m_phiSun);
+		m_uSunColor.setValue(m_sunColor);
+		m_uSkyColor.setValue(m_skyColor);
+		m_uGroundColor.setValue(m_groundColor);
 
-	invalidateConstants();
+		m_uKts.setValue(m_kts);
 
-	m_uSunConstants1.setValue(glm::vec3(CloudFuncs::b(m_thetaSun),
-		CloudFuncs::c(m_thetaSun),
-		CloudFuncs::r(m_thetaSun)));
-	m_uSunConstants2.setValue(glm::vec2(CloudFuncs::t(m_thetaSun),
-		CloudFuncs::kc(m_thetaSun)));
+		m_uCameraPos.setValue(getCameraPos());
+		if (m_isSunMove)
+			m_thetaSun = glm::mod(glutGet(GLUT_ELAPSED_TIME) / 10000.0f, glm::pi<GLfloat>() / 2.0f);
+		m_uThetaSun.setValue(m_thetaSun);
+		m_phiSun = glm::mod(glutGet(GLUT_ELAPSED_TIME) / 10000.0f, glm::pi<GLfloat>());
+		m_phiSun = 0.0f;
+		m_uPhiSun.setValue(m_phiSun);
+
+		invalidateConstants();
+
+		m_uSunConstants1.setValue(glm::vec3(CloudFuncs::b(m_thetaSun),
+			CloudFuncs::c(m_thetaSun),
+			CloudFuncs::r(m_thetaSun)));
+		m_uSunConstants2.setValue(glm::vec2(CloudFuncs::t(m_thetaSun),
+			CloudFuncs::kc(m_thetaSun)));
+	}
 	
 	std::vector<std::pair<GLfloat, GLuint> > distIdx;
 	glm::vec3 cameraPos = getCameraPos();
@@ -133,28 +142,45 @@ GLfloat CloudsField::normal(GLfloat mean, GLfloat stdev)
 void CloudsField::addVarToBar(TwBar* bar)
 {
 	TwAddSeparator(bar, "", "");
-	TwAddVarRW(bar, "ThetaSun",   TW_TYPE_FLOAT,  &m_thetaSun,  "");
-	TwAddVarRW(bar, "PhiSun",     TW_TYPE_FLOAT,  &m_phiSun,    "");
-	TwAddVarRW(bar, "kref",       TW_TYPE_FLOAT,  &CloudFuncs::kref,     "");
-	TwAddVarRW(bar, "gammaref",   TW_TYPE_FLOAT,  &CloudFuncs::gammaRef, "");
-	TwAddVarRW(bar, "zref",       TW_TYPE_FLOAT,  &CloudFuncs::zref,     "");
-	TwAddVarRW(bar, "g",          TW_TYPE_FLOAT,  &CloudFuncs::g,        "");
-	TwAddVarRW(bar, "IsMoveStop", TW_TYPE_BOOL32, &m_isMoveStop,  "");
+	TwAddVarRW(bar, "ThetaSun",    TW_TYPE_FLOAT,   &m_thetaSun,  "");
+	TwAddVarRW(bar, "PhiSun",      TW_TYPE_FLOAT,   &m_phiSun,    "");
+	TwAddVarRW(bar, "kref",        TW_TYPE_FLOAT,   &CloudFuncs::kref,     "");
+	TwAddVarRW(bar, "gammaref",    TW_TYPE_FLOAT,   &CloudFuncs::gammaRef, "");
+	TwAddVarRW(bar, "zref",        TW_TYPE_FLOAT,   &CloudFuncs::zref,     "");
+	TwAddVarRW(bar, "g",           TW_TYPE_FLOAT,   &CloudFuncs::g,        "");
+	TwAddVarRW(bar, "IsMoveStop",  TW_TYPE_BOOL32,  &m_isMoveStop,  "");
+	TwAddVarRW(bar, "IsSunMove",   TW_TYPE_BOOL32,  &m_isSunMove,   "");
+	TwAddVarRW(bar, "SunColor",    TW_TYPE_COLOR3F, &m_sunColor[0], "");
+	TwAddVarRW(bar, "SkyColor",    TW_TYPE_COLOR3F, &m_skyColor[0], "");
+	TwAddVarRW(bar, "GroundColor", TW_TYPE_COLOR3F, &m_groundColor[0], "");
+	TwAddSeparator(bar, "", "");
+	TwAddVarRW(bar, "T3 kt",     TW_TYPE_FLOAT,   &m_kts[0],  "");
+	TwAddVarRW(bar, "T2 kt",     TW_TYPE_FLOAT,   &m_kts[1],  "");
+	TwAddVarRW(bar, "T1 kt",     TW_TYPE_FLOAT,   &m_kts[2],  "");
+	TwAddVarRW(bar, "T0a kt",    TW_TYPE_FLOAT,   &m_kts[3],  "");
+	TwAddVarRW(bar, "T0b kt",    TW_TYPE_FLOAT,   &m_kts[4],  "");
+	TwAddVarRW(bar, "sky kt",    TW_TYPE_FLOAT,   &m_kts[5],  "");
+	TwAddVarRW(bar, "ground kt", TW_TYPE_FLOAT,   &m_kts[6],  "");
+	
 
 	TwDefine(" 'Clouds Coverage' size='240 480' ");
 }
 
 void CloudsField::reshape(int width, int height)
 {
-	m_shader->use();
-	m_uWindowSize.setValue(glm::vec2(static_cast<GLfloat>(width), static_cast<GLfloat>(height)));
+	if (m_shader){
+		m_shader->use();
+		m_uWindowSize.setValue(glm::vec2(static_cast<GLfloat>(width), static_cast<GLfloat>(height)));
+	}
 }
 
 void CloudsField::invalidateConstants()
 {
-	m_shader->use();
-	m_uKref.setValue(    CloudFuncs::kref);
-	m_uGammaRef.setValue(CloudFuncs::gammaRef);
-	m_uZRef.setValue(    CloudFuncs::zref);
-	m_ug.setValue(       CloudFuncs::g);
+	if (m_shader){
+		m_shader->use();
+		m_uKref.setValue(    CloudFuncs::kref);
+		m_uGammaRef.setValue(CloudFuncs::gammaRef);
+		m_uZRef.setValue(    CloudFuncs::zref);
+		m_ug.setValue(       CloudFuncs::g);
+	}
 }

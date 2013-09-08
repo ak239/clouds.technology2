@@ -28,8 +28,22 @@ private:
 class CloudsField : public RenderObject
 {
 public:
-	CloudsField() : m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
-	CloudsField(GLContext context) : RenderObject(context), m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true){}
+	CloudsField() : m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true), 
+		m_sunColor(227.0f / 255.0f, 168.0f / 255.0f, 87.0f / 255.0f),
+		m_skyColor(0.0f, 191.0f / 255.0f, 1.0f),
+		m_groundColor(0.0f, 196.0f / 255.0f, 58.0f / 255.0f),
+		m_isSunMove(true)
+	{
+		for (int i = 0; i < sizeof(m_kts) / sizeof(GLfloat); ++i) m_kts[i] = 1.0f;
+	}
+	CloudsField(GLContext context) : RenderObject(context), m_shader(0), m_thetaSun(glm::pi<GLfloat>() / 8.0f), m_phiSun(0.0f), m_isMoveStop(true), 
+		m_sunColor(227.0f / 255.0f, 168.0f / 255.0f, 87.0f / 255.0f),
+		m_skyColor(0.0f, 191.0f / 255.0f, 1.0f),
+		m_groundColor(0.0f, 196.0f / 255.0f, 58.0f / 255.0f),
+		m_isSunMove(true)
+	{
+		for (int i = 0; i < sizeof(m_kts) / sizeof(GLfloat); ++i) m_kts[i] = 1.0f;
+	}
 
 	void fill(GLuint cloudCount, const glm::vec3& leftBottomFar, const glm::vec3& rightTopNear, GLfloat coveragePercent);
 
@@ -48,6 +62,12 @@ public:
 		m_uSunConstants1 = mainShader->getUniform<glm::vec3>("sunConstants1");
 		m_uSunConstants2 = mainShader->getUniform<glm::vec2>("sunConstants2");
 		m_ug         = mainShader->getUniform<GLfloat>("g");
+
+		m_uSunColor    = mainShader->getUniform<glm::vec3>("sunColor");
+		m_uSkyColor    = mainShader->getUniform<glm::vec3>("skyColor");
+		m_uGroundColor = mainShader->getUniform<glm::vec3>("groundColor");
+
+		m_uKts = mainShader->getUniform<GLfloat[7]>("kts");
 	}
 
 	void addVarToBar(TwBar* bar);
@@ -85,6 +105,17 @@ private:
 	UniformWrapper<glm::vec2> m_uSunConstants2;
 	UniformWrapper<GLfloat>   m_ug;
 
+	glm::vec3                 m_sunColor;
+	UniformWrapper<glm::vec3> m_uSunColor;
+	glm::vec3                 m_skyColor;
+	UniformWrapper<glm::vec3> m_uSkyColor;
+	glm::vec3                 m_groundColor;
+	UniformWrapper<glm::vec3> m_uGroundColor;
+
+	GLfloat m_kts[7];
+	UniformWrapper<GLfloat[7]> m_uKts;
+
 	bool m_isMoveStop;	
+	bool m_isSunMove;
 };
 

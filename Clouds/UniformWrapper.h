@@ -63,3 +63,15 @@ template<>
 inline void UniformWrapper<glm::ivec2>::syncValue(){
 	glUniform2i(location, val.x, val.y);
 }
+
+template<>
+inline void UniformWrapper<GLfloat[7]>::syncValue(){
+	glUniform1fv(location, sizeof(val) / sizeof(GLfloat), &val[0]);
+}
+
+template<>
+inline void UniformWrapper<GLfloat[7]>::setValue(const GLfloat (&_val)[7]){
+	GLContextGetter get(getContext());
+	for (int i = 0; i < 7; ++i) val[i] = _val[i];
+	syncValue();
+}

@@ -6,20 +6,25 @@ void Cloud::setMainShader(Shader* mainShader)
 	mainShader->setContext(getContext());
 
 	m_mainShader = mainShader;
-	m_mainShader->use();
-	m_uMVP      = mainShader->getUniform<glm::mat4>("MVP");
-	m_uInvPV    = mainShader->getUniform<glm::mat4>("invPV");
-	m_uWidth    = mainShader->getUniform<glm::vec3>("width");
-	m_uCloudPos = mainShader->getUniform<glm::vec3>("cloudPos");
+	if (m_mainShader)
+	{
+		m_mainShader->use();
+		m_uMVP      = mainShader->getUniform<glm::mat4>("MVP");
+		m_uInvPV    = mainShader->getUniform<glm::mat4>("invPV");
+		m_uWidth    = mainShader->getUniform<glm::vec3>("width");
+		m_uCloudPos = mainShader->getUniform<glm::vec3>("cloudPos");
+	}
 }
 
 void Cloud::renderImpl(){
 	GET_CONTEXT();
 
-	m_uMVP.setValue(getProjectionView() * getModel());
-	m_uWidth.setValue(m_width);
-	m_uInvPV.setValue(glm::inverse(getProjectionView()));
-	m_uCloudPos.setValue(getPosition());
+	if (m_mainShader){
+		m_uMVP.setValue(getProjectionView() * getModel());
+		m_uWidth.setValue(m_width);
+		m_uInvPV.setValue(glm::inverse(getProjectionView()));
+		m_uCloudPos.setValue(getPosition());
+	}
 
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vertexBuffer);
