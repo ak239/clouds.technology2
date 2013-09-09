@@ -64,8 +64,8 @@ void Cloud::generateEllipse(glm::vec3 width, GLuint rings, GLuint sectors)
 			const GLfloat x = glm::cos(2 * glm::pi<GLfloat>() * s * S) * glm::sin( glm::pi<GLfloat>() * r * R );
 			const GLfloat z = glm::sin(2 * glm::pi<GLfloat>() * s * S) * glm::sin( glm::pi<GLfloat>() * r * R );
 
-			if (y > 0.6f)  y = 0.6f;
-			if (y < -0.6f) y = -0.6f + glm::gaussRand(0.2f, 0.3f);
+			if (y > 0.3f)  y = 0.3f;
+			if (y < -0.3f) y = -0.3f + glm::gaussRand(0.2f, 0.2f);
 
 			*v++ = glm::vec3( x * width.x, y * width.y, z * width.z);
 		}

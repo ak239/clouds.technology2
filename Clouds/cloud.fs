@@ -167,9 +167,10 @@ void main( void ) {
     //gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
     //return;
     //if (pos.y < cloudPos.y) discard;
-    z1    = (abs(pos.y - cloudPos.y) + 0.6 * width.y) * scaleKt;
+    z1    = (abs(pos.y - cloudPos.y) + 0.3 * width.y) * scaleKt;
     lview = abs(z1 / cos(thetaView));
     lsun  = abs(z1 / cos(thetaSun));
+    alpha = z1 / 20.0f;
   }
     
   float b  = sunConstants1.x;
